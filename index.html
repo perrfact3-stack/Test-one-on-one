@@ -9,6 +9,8 @@
         background: pink;
         text-align: center;
         font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        position: relative;
     }
 
     #mainImage {
@@ -17,6 +19,15 @@
         opacity: 0;
         transition: opacity 1.5s ease-in;
         border-radius: 12px;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        animation: sparkleGlow 2s infinite alternate;
+    }
+
+    @keyframes sparkleGlow {
+        0% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+        100% { box-shadow: 0 0 25px rgba(255, 255, 255, 1); }
     }
 
     #speech {
@@ -44,6 +55,15 @@
     #yesBtn {
         background-color: #ff4da6;
         color: white;
+        animation: heartbeat 1.2s infinite;
+    }
+
+    @keyframes heartbeat {
+        0% { transform: scale(1); }
+        25% { transform: scale(1.1); }
+        50% { transform: scale(1); }
+        75% { transform: scale(1.1); }
+        100% { transform: scale(1); }
     }
 
     #noBtn {
@@ -57,6 +77,57 @@
         width: 90%;
         margin-top: 25px;
         border-radius: 12px;
+        opacity: 0;
+        transition: opacity 1s ease-in;
+    }
+
+    #valVideo.showVideo {
+        opacity: 1;
+    }
+
+    #yesMessage {
+        margin-top: 15px;
+        font-size: 26px;
+        font-weight: bold;
+        color: #ff1f7a;
+        opacity: 0;
+        transition: opacity 1s ease-in;
+    }
+
+    #yesMessage.show {
+        opacity: 1;
+    }
+
+    .heart {
+        position: fixed;
+        bottom: -40px;
+        font-size: 24px;
+        color: #ff1f7a;
+        animation: floatUp 4s linear forwards;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    @keyframes floatUp {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+    }
+
+    .confetti {
+        position: fixed;
+        top: -20px;
+        width: 8px;
+        height: 14px;
+        background: red;
+        opacity: 0.9;
+        animation: fall 3s linear forwards;
+        z-index: 6;
+        pointer-events: none;
+    }
+
+    @keyframes fall {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(110vh) rotate(360deg); }
     }
 </style>
 </head>
@@ -88,6 +159,9 @@
 <!-- Hidden Video (muted so autoplay works) -->
 <video id="valVideo" src="video.mp4" controls muted></video>
 
+<!-- She said YES message -->
+<div id="yesMessage">She said YES!!! 💖🎉</div>
+
 <script>
     // Fade in image
     setTimeout(() => {
@@ -107,13 +181,58 @@
         document.getElementById("buttons").style.opacity = 1;
     }, 3200);
 
-    // Yes button → show video + play yes sound
-    document.getElementById("yesBtn").addEventListener("click", () => {
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const video = document.getElementById("valVideo");
+    const yesMessage = document.getElementById("yesMessage");
+
+    // Floating hearts
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }
+
+    function burstHearts(count) {
+        for (let i = 0; i < count; i++) {
+            setTimeout(createHeart, i * 150);
+        }
+    }
+
+    // Confetti
+    function createConfettiPiece() {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.backgroundColor = ["#ff4da6", "#ffd700", "#00c3ff", "#7cff7c"][Math.floor(Math.random() * 4)];
+        conf.style.animationDuration = (2 + Math.random() * 2) + "s";
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 4000);
+    }
+
+    function confettiBurst(count) {
+        for (let i = 0; i < count; i++) {
+            setTimeout(createConfettiPiece, i * 50);
+        }
+    }
+
+    // Yes button → show video + play yes sound + effects
+    yesBtn.addEventListener("click", () => {
         document.getElementById("yesSound").play();
 
-        const video = document.getElementById("valVideo");
         video.style.display = "block";
+        setTimeout(() => {
+            video.classList.add("showVideo");
+        }, 50);
         video.play();
+
+        yesMessage.classList.add("show");
+        burstHearts(12);
+        confettiBurst(40);
     });
 
     // No button messages + run away
@@ -125,8 +244,6 @@
         "Come onnn…",
         "The ROTC buddy is crying 😭"
     ];
-
-    const noBtn = document.getElementById("noBtn");
 
     noBtn.addEventListener("click", () => {
         if (noClickCount < noMessages.length) {
