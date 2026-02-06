@@ -1,7 +1,39 @@
 <!DOCTYPE html>
 <html>
-<body style="text-align:center; font-family:Arial; background:pink;">
-    <h1>She clicked YES 💖</h1>
-    <p>You’re winning, Alexander.</p>
+<head>
+<meta charset="UTF-8">
+<title>She said YES 💖</title>
+
+<style>
+    body {
+        background: pink;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    #videoBox {
+        margin-top: 40px;
+        opacity: 0;
+        transition: opacity 1.5s ease-in;
+    }
+
+    h1 {
+        color: #ff1f7a;
+        margin-top: 30px;
+    }
+</style>
+</head>
+<body>
+
+<h1>She said YES!!! 💖🎉</h1>
+
+<video id="videoBox" src="video.mp4" controls autoplay></video>
+
+<script>
+    setTimeout(() => {
+        document.getElementById("videoBox").style.opacity = 1;
+    }, 500);
+</script>
+
 </body>
 </html>
