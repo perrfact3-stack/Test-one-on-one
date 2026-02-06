@@ -11,15 +11,17 @@
         font-family: Arial, sans-serif;
     }
 
-    #videoBox {
-        margin-top: 40px;
-        opacity: 0;
-        transition: opacity 1.5s ease-in;
-    }
-
     h1 {
         color: #ff1f7a;
         margin-top: 30px;
+    }
+
+    #videoBox {
+        margin-top: 40px;
+        width: 70%;
+        border-radius: 12px;
+        opacity: 0;
+        transition: opacity 1.5s ease-in;
     }
 </style>
 </head>
@@ -32,7 +34,7 @@
 <script>
     setTimeout(() => {
         document.getElementById("videoBox").style.opacity = 1;
-    }, 500);
+    }, 300);
 </script>
 
 </body>
